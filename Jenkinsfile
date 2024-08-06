@@ -2,22 +2,12 @@ pipeline {
     agent any
 
     stages {
-        stage('initialize') {
+        stage('Initialize') {
             steps {
                 cleanWs()
             }
         }
-        stage('w/o docker') {
-            steps {
-                sh '''
-                    echo start w/o docker
-                    echo "some text 1" >> file1.txt
-                    ls -la
-                    echo stop w/o docker
-                '''
-            }
-        }
-        stage('w docker') {
+        stage('Build') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -26,12 +16,12 @@ pipeline {
             }
             steps {
                 sh '''
-                    echo start w/ docker
-                    echo "some text 2" >> file2.txt
-                    ls -la
+                    ls -al
                     node --version
                     npm --version
-                    echo end  w/ docker
+                    npm ci
+                    npm run build
+                    ls -al
                 '''
             }
         }
